@@ -1,0 +1,15 @@
+# Virtual Environment
+dbms/
+__pycache__/
+*.pyc
+
+# Environment Variables — NEVER push this!
+.env
+
+# Database
+*.db
+*.sqlite
+
+# IDE
+.vscode/
+.idea/

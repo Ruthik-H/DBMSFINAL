@@ -1,0 +1,274 @@
+📋 Your Developer Mental Model — Save This Forever!
+🧠 Phase 1 — Requirements Gathering (ALWAYS FIRST!)
+Never touch code before understanding the problem!
+
+Ask yourself:
+
+What data needs to be stored?
+What roles exist and what can each role do?
+What are the relationships between data?
+What are the restrictions and security concerns?
+
+👨‍🎓 Student  → View own attendance, receive absent notifications
+👨‍🏫 Teacher  → Mark attendance, check work hours, view timetable
+👨‍💼 Admin    → Manage everything, add/delete courses, verify data
+
+
+🗄️ Phase 2 — Database Design
+Key Concepts You Learned:
+
+Concept   	What It Means
+Primary Key	Uniquely identifies every row
+Foreign Key	References another table's primary key
+Normalization	Every piece of data lives in exactly ONE place
+1NF	        Columns are atomic, no duplicates
+2NF	        No partial dependencies
+3NF	        No transitive dependencies
+Junction/Bridge Table	Connects two tables with foreign keys
+Data Redundancy	Storing same data twice — always avoid!
+
+
+create a table structure
+for example:
+
+users
+├── user_id (PK)
+├── email
+├── password (hashed!)
+└── role (student/teacher/admin)
+
+students
+├── student_id (PK)
+├── user_id (FK → users)
+├── name
+├── roll_number
+└── class_id (FK → classes)
+
+teachers
+├── teacher_id (PK)
+├── user_id (FK → users)
+├── name
+└── employee_id
+
+classes
+├── class_id (PK)
+├── class_name
+└── section
+
+subjects
+├── subject_id (PK)
+├── subject_name
+└── teacher_id (FK → teachers)
+
+timetable (Bridge Table!)
+├── timetable_id (PK)
+├── teacher_id (FK → teachers)
+├── subject_id (FK → subjects)
+├── class_id (FK → classes)
+├── day
+├── period
+├── start_time
+└── end_time
+
+attendance (Bridge Table!)
+├── attendance_id (PK)
+├── student_id (FK → students)
+├── timetable_id (FK → timetable)
+├── date
+├── status (present/absent)
+└── marked_at
+
+🔐 Phase 3 — Authentication Design
+Key Concepts You Learned:
+
+Concept	                What It Means
+REST	                Rules for how frontend and backend communicate via HTTP
+JWT Token	        Like a movie ticket — proves who you are without server storing anything
+Stateless	        Server remembers nothing — JWT carries the identity
+RBAC	                Role Based Access Control — each role sees only their content
+Password Hashing	Never store raw passwords — always hash!
+Authorization	        What you can DO after you're logged in
+Authentication	        Proving WHO you are
+SECRET_KEY	        Wax seal — signs and verifies token integrity. Never changes!
+ALGORITHM	        HS256 — SHA256 hashing to sign tokens
+Token Expiry	        Token dies after 30 mins — user must login again
+
+
+
+JWT FLOW:
+
+1. User logs in with email + password
+        ↓
+2. Server verifies against database
+        ↓
+3. Server creates JWT with (user_id, role, expiry)
+        ↓
+4. Token sent to frontend
+        ↓
+5. Every request → frontend sends token
+        ↓
+6. Server reads and verifies token
+        ↓
+7. No database lookup needed for identity!
+
+
+SECRET_KEY = Stamp (stays on server FOREVER)
+JWT Token  = Stamped Letter (travels to frontend)
+
+
+📦 Phase 4 — Project Setup
+Key Concepts You Learned:
+
+Command	                        What It Does
+python -m venv name	        Creates virtual environment
+source name/bin/activate	Activates virtual environment
+pip install package1 package2	Installs packages
+pip freeze > requirements.txt	Saves all dependencies
+pip install -r requirements.txt	Recreates environment from file
+openssl rand -hex 32	        Generates secure random SECRET_KEY
+
+
+Why Virtual Environment?
+Avoids version conflicts between projects
+Keeps dependencies isolated and clean
+Makes your project reproducible for teammates
+
+
+Packages We Installed:
+
+fastapi          → Web framework
+uvicorn          → Server that runs FastAPI
+sqlalchemy       → ORM (Python ↔ Database)
+psycopg2-binary  → PostgreSQL specific driver
+python-jose      → JWT token handling
+passlib          → Password hashing
+python-dotenv    → Reads .env file
+python-multipart → Handles form data
+
+
+attendance-backend/
+├── app/
+│   ├── __init__.py          ← Makes folder a Python package
+│   ├── main.py              ← Entry point of entire app
+│   ├── database.py          ← DB connection logic
+│   ├── schemas.py           ← Data validation (IN and OUT)
+│   ├── config.py            ← Settings and environment variables
+│   ├── models/              ← Database table definitions
+│   ├── routers/             ← API endpoints
+│   └── auth/                ← JWT and authentication logic
+├── .env                     ← Secret keys (NEVER push to GitHub!)
+└── requirements.txt         ← All dependencies
+
+
+
+🔄 The Real Developer Workflow (No AI Era!)
+
+
+1. Understand the problem deeply
+        ↓
+2. Design on PAPER first (database, flow, roles)
+        ↓
+3. Read OFFICIAL documentation
+        ↓
+4. Set up project structure properly
+        ↓
+5. Build in small pieces and TEST each piece
+        ↓
+6. When stuck → Google exact error message
+        ↓
+7. Stack Overflow + GitHub Issues are your best friends
+        ↓
+8. Read other people's open source code
+        ↓
+9. Break things deliberately to understand them
+        ↓
+10. Document everything as you go
+
+
+🗄️ Phase 5 — PostgreSQL Setup
+Key Concepts:
+Concept	        Simple Meaning
+trust	        No password needed for local connections
+peer	        Linux username must match PostgreSQL username
+md5	        Password based authentication
+scram-sha-256	More secure — 256 bit hashing
+Collation	How database sorts and compares text
+
+
+✅ Our Build Order:
+
+1. database.py      ← Foundation (DB connection)
+        ↓
+2. models/          ← Walls (Table definitions)
+        ↓
+3. auth/            ← Furniture (JWT + password hashing)
+        ↓
+4. schemas.py       ← Shapes (Data validation)
+        ↓
+5. routers/         ← Doors (API endpoints)
+        ↓
+6. main.py          ← Roof (Ties everything together)
+
+
+SQLAlchemy → The ORM — lets you write Python classes instead of SQL queries ✅
+
+psycopg2-binary → You said "interpreting" — actually it's the driver/adapter — think of it like a translator cable between SQLAlchemy and PostgreSQL specifically!
+
+SQLAlchemy (Python ORM)
+        ↓
+psycopg2-binary (PostgreSQL specific driver)
+        ↓
+PostgreSQL (Database)
+
+
+.env        ← sensitive info lives HERE
+.gitignore  ← just tells git to ignore .env
+
+Sensitive info → .env file
+.env → listed in .gitignore
+Therefore → credentials never reach GitHub! ✅
+
+
+phase 6:
+
+create your db 
+ALTER DATABASE template1 REFRESH COLLATION VERSION;
+ALTER DATABASE postgres REFRESH COLLATION VERSION;
+CREATE DATABASE attendance_db;
+\l    → list all databases
+\q    → quit psql
+
+
+
+postgresql://username:password@localhost/dbname
+postgresql://postgres@localhost/attendance_db  ← ours (no password needed!)
+
+
+
+🔧 Phase 7 — database.py (Current!)
+Concepts:
+Concept	            Simple Meaning
+Engine	            Creates and manages DB connection using DATABASE_URL
+Session	            Like a conversation with the database
+Base	            Parent class all models inherit from
+autocommit=False    We control when data is saved (transactions!)
+autoflush=False	    We control when changes are sent to DB
+Transaction	    All operations succeed or NONE do — no half saves!
+
+
+🔄 Build Order (Your Discovery!):
+
+
+1. database.py  ✅ Almost done!
+        ↓
+2. models/      ⏳ Next!
+        ↓
+3. auth/        ⏳ Pending
+        ↓
+4. schemas.py   ⏳ Pending
+        ⏳
+5. routers/     ⏳ Pending
+        ↓
+6. main.py      ⏳ Last!
+
+

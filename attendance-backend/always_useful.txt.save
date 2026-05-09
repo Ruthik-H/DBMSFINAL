@@ -1,0 +1,139 @@
+📋 Your Developer Mental Model — Save This Forever!
+🧠 Phase 1 — Requirements Gathering (ALWAYS FIRST!)
+Never touch code before understanding the problem!
+
+Ask yourself:
+
+What data needs to be stored?
+What roles exist and what can each role do?
+What are the relationships between data?
+What are the restrictions and security concerns?
+
+
+🗄️ Phase 2 — Database Design
+Key Concepts You Learned:
+
+Concept   	What It Means
+Primary Key	Uniquely identifies every row
+Foreign Key	References another table's primary key
+Normalization	Every piece of data lives in exactly ONE place
+1NF	        Columns are atomic, no duplicates
+2NF	        No partial dependencies
+3NF	        No transitive dependencies
+Junction/Bridge Table	Connects two tables with foreign keys
+Data Redundancy	Storing same data twice — always avoid!
+
+
+create a table structure
+
+
+🔐 Phase 3 — Authentication Design
+Key Concepts You Learned:
+
+Concept	                What It Means
+REST	                Rules for how frontend and backend communicate via HTTP
+JWT Token	        Like a movie ticket — proves who you are without server storing anything
+Stateless	        Server remembers nothing — JWT carries the identity
+RBAC	                Role Based Access Control — each role sees only their content
+Password Hashing	Never store raw passwords — always hash!
+Authorization	        What you can DO after you're logged in
+Authentication	        Proving WHO you are
+
+
+jwt flow:
+Login → Server creates token with (user_id, role, expiry)
+Every Request → Frontend sends token
+Server → Reads and verifies token → No database lookup needed!
+
+
+📦 Phase 4 — Project Setup
+Key Concepts You Learned:
+
+Command	                        What It Does
+python -m venv name	        Creates virtual environment
+source name/bin/activate	Activates virtual environment
+pip install package1 package2	Installs packages
+pip freeze > requirements.txt	Saves all dependencies
+pip install -r requirements.txt	Recreates environment from file
+
+
+
+Why Virtual Environment?
+Avoids version conflicts between projects
+Keeps dependencies isolated and clean
+Makes your project reproducible for teammates
+
+
+📁 Phase 5 — Project Structure
+
+attendance-backend/
+├── app/
+│   ├── __init__.py          ← Makes folder a Python package
+│   ├── main.py              ← Entry point of entire app
+│   ├── database.py          ← DB connection logic
+│   ├── schemas.py           ← Data validation (IN and OUT)
+│   ├── config.py            ← Settings and environment variables
+│   ├── models/              ← Database table definitions
+│   ├── routers/             ← API endpoints
+│   └── auth/                ← JWT and authentication logic
+├── .env                     ← Secret keys (NEVER push to GitHub!)
+└── requirements.txt         ← All dependencies
+
+
+
+🔄 The Real Developer Workflow (No AI Era!)
+
+
+1. Understand the problem deeply
+        ↓
+2. Design on PAPER first (database, flow, roles)
+        ↓
+3. Read OFFICIAL documentation
+        ↓
+4. Set up project structure properly
+        ↓
+5. Build in small pieces and TEST each piece
+        ↓
+6. When stuck → Google exact error message
+        ↓
+7. Stack Overflow + GitHub Issues are your best friends
+        ↓
+8. Read other people's open source code
+        ↓
+9. Break things deliberately to understand them
+        ↓
+10. Document everything as you go
+
+
+
+✅ Our Build Order:
+
+1. database.py      ← Foundation (DB connection)
+        ↓
+2. models/          ← Walls (Table definitions)
+        ↓
+3. auth/            ← Furniture (JWT + password hashing)
+        ↓
+4. schemas.py       ← Shapes (Data validation)
+        ↓
+5. routers/         ← Doors (API endpoints)
+        ↓
+6. main.py          ← Roof (Ties everything together)
+
+
+
+SQLAlchemy → The ORM — lets you write Python classes instead of SQL queries ✅
+
+psycopg2-binary → You said "interpreting" — actually it's the driver/adapter — think of it like a translator cable between SQLAlchemy and PostgreSQL specifically!
+
+
+
+SQLAlchemy (Python ORM)
+        ↓
+psycopg2-binary (PostgreSQL specific driver)
+        ↓
+PostgreSQL (Database)
+
+
+nest step - working with postgres and its connection.
+
